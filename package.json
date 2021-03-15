@@ -1,0 +1,30 @@
+{
+  "name": "aws-svg-icons",
+  "version": "1.0.0-2021-01-31",
+  "description": "AWS SVG architecture icons",
+  "keywords": [
+    "aws",
+    "icons",
+    "SVG"
+  ],
+  "directories": {
+    "lib": "./lib"
+  },
+  "scripts": {
+    "generate": "node download.js",
+    "prepare": "npm run generate",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "github:sashee/aws-svg-icons",
+  "author": {
+    "name": "Tamas Sallai",
+    "url": "https://advancedweb.hu/"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "find-cache-dir": "^3.3.1",
+    "jszip": "^3.6.0",
+    "node-fetch": "^2.6.1",
+    "rimraf": "^3.0.2"
+  }
+}
