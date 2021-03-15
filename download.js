@@ -7,6 +7,7 @@ const findCacheDir = require("find-cache-dir");
 const rimraf = require("rimraf");
 const util = require("util");
 const config = require("./config.json");
+const packageJson = require("./package.json");
 
 const thunk = findCacheDir({name: "aws-svg-icons", thunk: true});
 
@@ -70,4 +71,93 @@ const processZip = async (baseDir, file) => {
 		await fs.mkdir(path.dirname(inLibPath), {recursive: true});
 		await fs.writeFile(inLibPath, contents);
 	}));
+
+	await util.promisify(rimraf)("docs");
+	await fs.mkdir("docs", {recursive: true});
+
+	const allFolders = withFirstPathRemoved.map(({path: filePath}) => path.dirname(filePath)).filter((e, i, l) => l.indexOf(e) === i).sort((a, b) => a.localeCompare(b));
+
+	const html = `
+<!DOCTYPE html>
+<html>
+	<head>
+	<style>
+	body{
+		background: #eee;
+		padding: 2em;
+	}
+	.icon {
+		display: inline-block;
+	}
+	.icon label {
+		display:none;
+	}
+	.icon:hover {
+		background-color: black;
+		position: relative;
+		cursor: pointer;
+	}
+	.icon:hover label, .icon:focus label {
+		display: block;
+		position: absolute;
+		padding: 0.5em;
+		background: #111;
+		color: #FFF;
+		top: -2em;
+		font-size: 11px;
+		font-weight: bold;
+		white-space: nowrap;
+		border-radius: 4px 4px 4px 0;
+	}
+	</style>
+	<script>
+		const copyToClipboard = async (text, div) => {
+			const notification = await (async () => {
+				try {
+					await navigator.clipboard.writeText(text);
+					return "Path copied to clipboard!";
+				}catch(e) {
+					console.error(e);
+					return "Failed to copy path to clipboard";
+				}
+			})();
+			const label = div.querySelector("label");
+			const originalText = label.innerText;
+			label.innerText = notification;
+			await new Promise((res) => setTimeout(res, 5000));
+			label.innerText = originalText;
+		}
+	</script>
+	</head>
+	<body>
+		<h1>aws-svg-icons</h1>
+		<small>Click on an icon to copy its path to the clipboard</small>
+		<h2>Folders</h2>
+		<ul>
+			${allFolders.map((dirname, i) => `<li><a href="#dir_${i}">${dirname}</a></li>`).join("")}
+		</ul>
+		${allFolders.map((dirname, i) => `
+			<section>
+				<h2 id="dir_${i}">${dirname}</h2>
+				${withFirstPathRemoved.filter(({path: filePath}) => path.dirname(filePath) === dirname).map(({path: filePath, contents}) => `
+					<div class="icon" onclick="copyToClipboard('aws-svg-icons/lib/${filePath}', this)">
+						<label>${path.basename(filePath).replace(/\.svg$/, "")}</label>
+						${contents.toString("utf8")}
+					</div>
+				`).join("")}
+			</section>
+		`).join("")}
+		
+		<section>
+			<br/>
+			<b>${withFirstPathRemoved.length}</b> icons from <a href="https://aws.amazon.com/architecture/icons/">https://aws.amazon.com/architecture/icons/</a><br/><br/>
+			Asset file: <a href="${config.url}">${config.url}</a><br/><br/>
+			<a href="https://github.com/sashee/aws-svg-icons">https://github.com/sashee/aws-svg-icons</a><br/>
+			Version: ${packageJson.version}
+		</section>
+	</body>
+</html>
+`;
+	await fs.writeFile("docs/index.html", html);
+
 })();
