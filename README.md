@@ -24,4 +24,4 @@ import lambdaIcon from "aws-svg-icons/lib/Arch_Compute/64/Arch_AWS-Lambda_64.svg
 
 ## Credits
 
-Insired by [react-aws-icons](https://github.com/travomic/react-aws-icons)
+Inspired by [react-aws-icons](https://github.com/travomic/react-aws-icons).
