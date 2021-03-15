@@ -1,15 +1,15 @@
 {
   "name": "aws-svg-icons",
-  "version": "1.0.0-2021-01-31",
+  "version": "1.0.0",
   "description": "AWS SVG architecture icons",
   "keywords": [
     "aws",
     "icons",
     "SVG"
   ],
-	"files": [
-		"lib"
-	],
+  "files": [
+    "lib"
+  ],
   "directories": {
     "lib": "./lib"
   },
