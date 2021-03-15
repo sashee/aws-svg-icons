@@ -7,6 +7,9 @@
     "icons",
     "SVG"
   ],
+	"files": [
+		"lib"
+	],
   "directories": {
     "lib": "./lib"
   },
