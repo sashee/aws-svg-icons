@@ -75,6 +75,12 @@ const processZip = async (baseDir, file) => {
 	await util.promisify(rimraf)("docs");
 	await fs.mkdir("docs", {recursive: true});
 
+	await Promise.all(withFirstPathRemoved.map(async ({path: filePath, contents}) => {
+		const inDocsPath = path.join("docs", filePath);
+		await fs.mkdir(path.dirname(inDocsPath), {recursive: true});
+		await fs.writeFile(inDocsPath, contents);
+	}));
+
 	const allFolders = withFirstPathRemoved.map(({path: filePath}) => path.dirname(filePath)).filter((e, i, l) => l.indexOf(e) === i).sort((a, b) => a.localeCompare(b));
 
 	const html = `
@@ -139,10 +145,10 @@ const processZip = async (baseDir, file) => {
 		${allFolders.map((dirname, i) => `
 			<section>
 				<h2 id="dir_${i}">${dirname}</h2>
-				${withFirstPathRemoved.filter(({path: filePath}) => path.dirname(filePath) === dirname).map(({path: filePath, contents}) => `
+				${withFirstPathRemoved.filter(({path: filePath}) => path.dirname(filePath) === dirname).map(({path: filePath}) => `
 					<div class="icon" onclick="copyToClipboard('aws-svg-icons/lib/${filePath}', this)">
 						<label>${path.basename(filePath).replace(/\.svg$/, "")}</label>
-						${contents.toString("utf8")}
+						<img src="${filePath}"/>
 					</div>
 				`).join("")}
 			</section>
