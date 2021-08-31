@@ -17,7 +17,7 @@ The icons are under the ```lib/``` directory, and they follow the directory stru
 You can use it in React:
 
 ```
-import lambdaIcon from "aws-svg-icons/lib/Arch_Compute/64/Arch_AWS-Lambda_64.svg";
+import lambdaIcon from "aws-svg-icons/lib/Architecture-Service-Icons_07302021/Arch_Compute/64/Arch_AWS-Lambda_64.svg";
 
 <img src={lambdaIcon}/>
 ```
